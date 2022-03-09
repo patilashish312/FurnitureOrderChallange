@@ -3,6 +3,7 @@ package hackerrank;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class FurnitureOrder implements FurnitureOrderInterface {
 	private Map<String, Float> furniture;
@@ -19,21 +20,14 @@ public class FurnitureOrder implements FurnitureOrderInterface {
 	}
 
 	public HashMap<Furniture, Integer> getOrderedFurniture() {
-		HashMap<Furniture, Integer> totalOrder = new HashMap<Furniture, Integer>();
-		for (Entry<String, Float> e : this.furniture.entrySet()) {
-
-			totalOrder.put(Furniture.valueOf(e.getKey().toUpperCase()),
-					(int) (e.getValue() / (Furniture.valueOf(e.getKey().toUpperCase()).cost())));
-		}
-		return totalOrder;
+		return (HashMap<Furniture, Integer>) this.furniture.entrySet().stream()
+				.collect(Collectors.toMap(e -> Furniture.valueOf(e.getKey().toUpperCase()),
+						e -> (int) (e.getValue() / (Furniture.valueOf(e.getKey().toUpperCase()).cost()))));
 	}
 
 	public float getTotalOrderCost() {
-		float total = 0.0f;
-		for (float f : this.furniture.values()) {
-			total = total + f;
-		}
-		return total;
+		return this.furniture.values().stream().reduce(0.0f, (a, b) -> a + b);
+
 	}
 
 	public int getTypeCount(Furniture type) {
